@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  primary:
+    build: ./primary
+    container_name: primary
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: appdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - primary_data:/var/lib/postgresql/data
+    networks:
+      - pg-network
+
+  replica:
+    build: ./replica
+    container_name: replica
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: appdb
+      PRIMARY_HOST: primary
+    ports:
+      - "5433:5432"
+    depends_on:
+      - primary
+    volumes:
+      - replica_data:/var/lib/postgresql/data
+    networks:
+      - pg-network
+
+volumes:
+  primary_data:
+  replica_data:
+
+networks:
+  pg-network:
+
