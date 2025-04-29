@@ -32,6 +32,23 @@ services:
     networks:
       - pg-network
 
+  replica2:
+    build: ./replica2
+    container_name: replica2
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: appdb
+      PRIMARY_HOST: primary
+    ports:
+      - "5434:5432"
+    depends_on:
+      - primary
+    volumes:
+      - replica_data:/var/lib/postgresql/data
+    networks:
+      - pg-network
+
 volumes:
   primary_data:
   replica_data:
